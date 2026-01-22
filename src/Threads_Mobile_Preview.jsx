@@ -19,6 +19,7 @@ import {
   VoteCount,
   PostBar,
   SwipeableReply,
+  ReplyActivity,
 } from './components';
 
 // Import data
@@ -866,6 +867,14 @@ export default function ThreadingApp() {
             </div>
           </div>
         </div>
+
+        {/* ReplyActivity Preview - TEMPORARY FOR TESTING */}
+        <ReplyActivity
+          timestamp="1h ago"
+          authorNumber={13}
+          targetUserNumber={3}
+          onClick={() => console.log('Navigate to reply')}
+        />
 
         {/* Dynamic Replies - Organized into threads */}
         {(() => {
