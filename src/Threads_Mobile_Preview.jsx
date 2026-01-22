@@ -386,7 +386,7 @@ export default function ThreadingApp() {
   // Feed View
   if (currentView === 'feed') {
     return (
-      <div style={{ backgroundColor: 'white', minHeight: '100vh', display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'relative', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl' }}>
+      <div style={{ backgroundColor: 'white', height: '100vh', display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl', overflowY: 'auto' }}>
         {/* Feed Header */}
         <div style={{ backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '48px', padding: '0 16px', position: 'sticky', top: 0, zIndex: 100 }}>
           <div style={{ flex: 1 }}>
