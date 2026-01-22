@@ -505,7 +505,7 @@ export default function ThreadingApp() {
                   backgroundColor: ojColor,
                   borderRadius: '8px',
                   padding: '16px',
-                  paddingRight: '56px',
+                  paddingLeft: '56px',
                   position: 'relative',
                   cursor: 'pointer'
                 }}
@@ -524,7 +524,7 @@ export default function ThreadingApp() {
                 <span style={{ color: 'white', fontSize: '16px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>{feedPost.hashtag}</span>
 
                 {/* Vote Count */}
-                <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)' }}>
+                <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}>
                   <VoteCount
                     initialVotes={feedPost.votes}
                     voteState="default"
@@ -536,7 +536,7 @@ export default function ThreadingApp() {
                 {/* More button */}
                 <button
                   onClick={(e) => e.stopPropagation()}
-                  style={{ position: 'absolute', right: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                  style={{ position: 'absolute', left: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                 >
                   <MoreHorizontal style={{ width: '24px', height: '24px', color: 'white' }} />
                 </button>
@@ -682,7 +682,7 @@ export default function ThreadingApp() {
                   style={{
                     backgroundColor: '#009d52',
                     padding: '16px',
-                    paddingRight: '62px',
+                    paddingLeft: '62px',
                     position: 'relative',
                     scrollMarginTop: '80px',
                   }}
@@ -700,7 +700,7 @@ export default function ThreadingApp() {
                     })}
                   </p>
 
-                  <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }}>
+                  <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }}>
                     <VoteCount
                       initialVotes={parent.votes}
                       voteState={parent.voteState}
@@ -709,7 +709,7 @@ export default function ThreadingApp() {
                     />
                   </div>
 
-                  <button style={{ position: 'absolute', right: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }}>
+                  <button style={{ position: 'absolute', left: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }}>
                     <MoreHorizontal style={{ width: '24px', height: '24px', color: 'white' }} />
                   </button>
 
@@ -745,7 +745,7 @@ export default function ThreadingApp() {
                     backgroundColor: '#009d52',
                     padding: '16px',
                     paddingRight: '32px',
-                    paddingRight: '62px',
+                    paddingLeft: '62px',
                     position: 'relative',
                     scrollMarginTop: '80px',
                   }}
@@ -788,7 +788,7 @@ export default function ThreadingApp() {
                     })}
                   </p>
 
-                  <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }}>
+                  <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }}>
                     <VoteCount
                       initialVotes={reply.votes}
                       voteState={reply.voteState}
@@ -797,7 +797,7 @@ export default function ThreadingApp() {
                     />
                   </div>
 
-                  <button style={{ position: 'absolute', right: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }}>
+                  <button style={{ position: 'absolute', left: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }}>
                     <MoreHorizontal style={{ width: '24px', height: '24px', color: 'white' }} />
                   </button>
 
@@ -862,7 +862,7 @@ export default function ThreadingApp() {
         mainScrollRef.current = el;
       }} style={{ flex: 1, overflowY: 'auto', backgroundColor: '#009d52' }}>
         {/* Main Post */}
-        <div style={{ backgroundColor: '#009d52', borderBottom: '4px solid white', padding: '16px', paddingRight: '62px', position: 'relative' }}>
+        <div style={{ backgroundColor: '#009d52', borderBottom: '4px solid white', padding: '16px', paddingLeft: '62px', position: 'relative' }}>
           <PostHeader isOJ={post.userType === 'OJ'} label={post.userType === 'OJ' ? 'OJ' : String(post.userNumber)} bgColor={ojColor} arrowColor={ojColor} channel={post.channel} distance={post.distance} duration={post.duration} />
 
           {/* Post Content */}
@@ -874,7 +874,7 @@ export default function ThreadingApp() {
           </div>
 
           {/* Vote Count - Right Side */}
-          <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)' }}>
+          <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}>
             <VoteCount
               initialVotes={mainPostVotes}
               voteState={mainPostVoteState}
@@ -884,7 +884,7 @@ export default function ThreadingApp() {
           </div>
 
           {/* More Button */}
-          <button style={{ position: 'absolute', right: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer' }}>
+          <button style={{ position: 'absolute', left: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer' }}>
             <MoreHorizontal style={{ width: '24px', height: '24px', color: 'white' }} />
           </button>
 
@@ -981,7 +981,7 @@ export default function ThreadingApp() {
                         style={{
                           backgroundColor: '#009d52',
                           padding: '16px',
-                          paddingRight: '62px',
+                          paddingLeft: '62px',
                           position: 'relative',
                           cursor: 'pointer',
                         }}
@@ -1013,7 +1013,7 @@ export default function ThreadingApp() {
                           })}
                         </p>
 
-                        <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }} onClick={(e) => e.stopPropagation()}>
+                        <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }} onClick={(e) => e.stopPropagation()}>
                           <VoteCount
                             initialVotes={parent.votes}
                             voteState={parent.voteState}
@@ -1022,7 +1022,7 @@ export default function ThreadingApp() {
                           />
                         </div>
 
-                        <button onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', right: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }}>
+                        <button onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', left: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }}>
                           <MoreHorizontal style={{ width: '24px', height: '24px', color: 'white' }} />
                         </button>
 
@@ -1060,7 +1060,7 @@ export default function ThreadingApp() {
                           backgroundColor: '#009d52',
                           padding: '16px',
                           paddingRight: '32px',
-                          paddingRight: '62px',
+                          paddingLeft: '62px',
                           position: 'relative',
                           cursor: 'pointer',
                         }}
@@ -1103,7 +1103,7 @@ export default function ThreadingApp() {
                           })}
                         </p>
 
-                        <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }} onClick={(e) => e.stopPropagation()}>
+                        <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }} onClick={(e) => e.stopPropagation()}>
                           <VoteCount
                             initialVotes={reply.votes}
                             voteState={reply.voteState}
@@ -1112,7 +1112,7 @@ export default function ThreadingApp() {
                           />
                         </div>
 
-                        <button onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', right: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }}>
+                        <button onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', left: '16px', top: '16px', background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }}>
                           <MoreHorizontal style={{ width: '24px', height: '24px', color: 'white' }} />
                         </button>
 
