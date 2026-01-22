@@ -188,7 +188,7 @@ export const PostBar = ({ inputValue, setInputValue, isActive, setIsActive, onPo
       <div style={{
         alignSelf: 'stretch',
         padding: '8px',
-        paddingBottom: 'calc(8px + env(safe-area-inset-bottom, 0px))',
+        paddingBottom: isActive ? '8px' : 'calc(8px + env(safe-area-inset-bottom, 0px))',
         backgroundColor: 'white',
         display: 'inline-flex',
         justifyContent: 'flex-start',
