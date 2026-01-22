@@ -35,9 +35,6 @@ export default function ThreadingApp() {
   const [currentView, setCurrentView] = useState('feed');
   const [selectedPost, setSelectedPost] = useState(null);
 
-  // Transition state for page animations
-  const [isTransitioning, setIsTransitioning] = useState(false);
-
   // Post data - will be set when a post is opened
   const [post, setPost] = useState(mockData.posts[0]);
 
@@ -175,12 +172,7 @@ export default function ThreadingApp() {
     setReplyingTo(null);
     setInputValue('');
     setIsInputActive(false);
-    // Animate transition
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setOpenThread({ parent, subReplies, lastVisibleReplyId, replyOffsetFromTop, scrollToReplyId });
-      setIsTransitioning(false);
-    }, 150);
+    setOpenThread({ parent, subReplies, lastVisibleReplyId, replyOffsetFromTop, scrollToReplyId });
   };
 
   // Handle closing thread view and restoring scroll position
@@ -189,11 +181,7 @@ export default function ThreadingApp() {
     setReplyingTo(null);
     setInputValue('');
     setIsInputActive(false);
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setOpenThread(null);
-      setIsTransitioning(false);
-    }, 150);
+    setOpenThread(null);
     // scrollBackToReplyId is already set, useEffect will scroll to it
   };
 
@@ -587,8 +575,7 @@ export default function ThreadingApp() {
     const truncatedText = parent.text.length > 50 ? parent.text.substring(0, 50) + '...' : parent.text;
 
     return (
-      <div style={{ backgroundColor: '#009d52', height: viewportHeight, width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: viewportOffset, left: '50%', transform: 'translateX(-50%)' }}>
-        <div style={{ backgroundColor: '#009d52', height: '100%', display: 'flex', flexDirection: 'column', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl', opacity: isTransitioning ? 0 : 1, transition: 'opacity 150ms ease-in-out' }}>
+      <div style={{ backgroundColor: '#009d52', height: viewportHeight, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: viewportOffset, left: '50%', transform: 'translateX(-50%)', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl' }}>
         {/* Thread View Top Navigation Bar - Fixed */}
         <div style={{ backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', height: '48px', padding: '8px 16px', zIndex: 100, gap: '16px', overflow: 'hidden', flexShrink: 0 }}>
           <button
@@ -812,14 +799,12 @@ export default function ThreadingApp() {
           onCancelReply={handleCancelReply}
           customPlaceholder={threadPlaceholder}
         />
-        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ backgroundColor: '#009d52', height: viewportHeight, width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: viewportOffset, left: '50%', transform: 'translateX(-50%)' }}>
-      <div style={{ backgroundColor: '#009d52', height: '100%', display: 'flex', flexDirection: 'column', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl', opacity: isTransitioning ? 0 : 1, transition: 'opacity 150ms ease-in-out' }}>
+    <div style={{ backgroundColor: '#009d52', height: viewportHeight, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: viewportOffset, left: '50%', transform: 'translateX(-50%)', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl' }}>
       {/* Top Navigation Bar - Fixed */}
       <div style={{ backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '49px', padding: '0 16px', zIndex: 100, flexShrink: 0 }}>
         <button onClick={handleBackToFeed} style={{ width: '24px', height: '24px', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
@@ -1295,7 +1280,6 @@ export default function ThreadingApp() {
         inputRef={inputRef}
         onCancelReply={handleCancelReply}
       />
-      </div>
     </div>
   );
 }
