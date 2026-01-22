@@ -171,6 +171,10 @@ export default function ThreadingApp() {
       replyOffsetFromTop = rect.top;
     }
 
+    // Clear reply state when navigating
+    setReplyingTo(null);
+    setInputValue('');
+    setIsInputActive(false);
     // Animate transition
     setIsTransitioning(true);
     setTimeout(() => {
@@ -181,6 +185,10 @@ export default function ThreadingApp() {
 
   // Handle closing thread view and restoring scroll position
   const handleCloseThread = () => {
+    // Clear reply state when navigating
+    setReplyingTo(null);
+    setInputValue('');
+    setIsInputActive(false);
     setIsTransitioning(true);
     setTimeout(() => {
       setOpenThread(null);
@@ -385,29 +393,28 @@ export default function ThreadingApp() {
       ...reply,
       voteState: 'default'
     })));
-    // Animate transition
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentView('postDetail');
-      setIsTransitioning(false);
-    }, 150);
+    setCurrentView('postDetail');
+    // Clear reply state when navigating
+    setReplyingTo(null);
+    setInputValue('');
+    setIsInputActive(false);
   };
 
   // Handle going back to feed
   const handleBackToFeed = () => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentView('feed');
-      setSelectedPost(null);
-      setOpenThread(null);
-      setIsTransitioning(false);
-    }, 150);
+    setCurrentView('feed');
+    setSelectedPost(null);
+    setOpenThread(null);
+    // Clear reply state when navigating
+    setReplyingTo(null);
+    setInputValue('');
+    setIsInputActive(false);
   };
 
   // Feed View
   if (currentView === 'feed') {
     return (
-      <div style={{ backgroundColor: 'white', height: '100vh', display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl', overflowY: 'auto', opacity: isTransitioning ? 0 : 1, transition: 'opacity 150ms ease-in-out' }}>
+      <div style={{ backgroundColor: 'white', height: '100vh', display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl', overflowY: 'auto' }}>
         {/* Feed Header */}
         <div style={{ backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '48px', padding: '0 16px', position: 'sticky', top: 0, zIndex: 100 }}>
           <div style={{ flex: 1 }}>
