@@ -15,6 +15,7 @@ import {
   LoadingIcon,
   CloseIcon,
   ReplySwipeIcon,
+  GoToReplyArrowIcon,
 } from './icons';
 
 // UserButton Component
@@ -412,6 +413,143 @@ export const SwipeableReply = ({ children, onReply, disabled = false }) => {
         }}
       >
         {children}
+      </div>
+    </div>
+  );
+};
+
+// Author Pill Component for ReplyActivity
+const AuthorPill = ({ userNumber, isOJ = false }) => (
+  <div style={{
+    height: '24px',
+    paddingTop: '2px',
+    paddingBottom: '2px',
+    borderRadius: '16px',
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: '2px',
+    overflow: 'hidden',
+  }}>
+    <div style={{
+      paddingLeft: '4px',
+      paddingRight: '8px',
+      paddingTop: '2px',
+      paddingBottom: '2px',
+      borderRadius: '9.41px',
+      outline: '1px solid rgba(255, 255, 255, 0.3)',
+      outlineOffset: '-1px',
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      gap: '4px',
+      overflow: 'hidden',
+    }}>
+      <span style={{
+        textAlign: 'center',
+        color: 'white',
+        fontSize: '10px',
+        fontFamily: '"GothamBold", Gotham, sans-serif',
+        fontWeight: 600,
+        lineHeight: '12px',
+      }}>
+        {isOJ ? 'OJ' : userNumber}
+      </span>
+      {isOJ ? <OJIcon /> : <GuestIcon />}
+    </div>
+  </div>
+);
+
+// ReplyActivity Component - Shows activity notification for replies in threads
+export const ReplyActivity = ({
+  timestamp = '1h ago',
+  authorNumber,
+  authorIsOJ = false,
+  targetUserNumber,
+  targetIsOJ = false,
+  onClick,
+}) => {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        width: '100%',
+        padding: '16px',
+        position: 'relative',
+        backgroundColor: '#009d52',
+        display: 'inline-flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        gap: '16px',
+        overflow: 'hidden',
+        cursor: onClick ? 'pointer' : 'default',
+        direction: 'rtl',
+      }}
+    >
+      {/* Header row */}
+      <div style={{
+        alignSelf: 'stretch',
+        display: 'inline-flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        gap: '4px',
+      }}>
+        {/* Timestamp */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          gap: '2px',
+        }}>
+          <span style={{
+            color: 'white',
+            fontSize: '10px',
+            fontFamily: '"GothamBook", Gotham, sans-serif',
+            fontWeight: 500,
+            lineHeight: '12px',
+          }}>
+            {timestamp} •
+          </span>
+        </div>
+
+        {/* Author pill */}
+        <AuthorPill userNumber={authorNumber} isOJ={authorIsOJ} />
+
+        {/* "replied in a thread of" text */}
+        <span style={{
+          color: 'white',
+          fontSize: '10px',
+          fontFamily: '"GothamBook", Gotham, sans-serif',
+          fontWeight: 500,
+          lineHeight: '12px',
+        }}>
+          replied in a thread of
+        </span>
+
+        {/* Target user pill */}
+        <AuthorPill userNumber={targetUserNumber} isOJ={targetIsOJ} />
+      </div>
+
+      {/* Go to reply button - positioned at bottom left (RTL: bottom right visually) */}
+      <div style={{
+        position: 'absolute',
+        left: '40px',
+        top: '40px',
+        transform: 'rotate(180deg)',
+        transformOrigin: 'top left',
+        backgroundColor: '#009d52',
+        borderRadius: '9999px',
+        padding: '4px',
+        outline: '1px solid rgba(255, 255, 255, 0.3)',
+        outlineOffset: '-1px',
+        display: 'inline-flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '8px',
+        overflow: 'hidden',
+      }}>
+        <GoToReplyArrowIcon />
       </div>
     </div>
   );
