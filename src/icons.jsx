@@ -1,8 +1,8 @@
 import React from 'react';
 
-// OJ Icon (crown)
-export const OJIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+// OJ Icon (crown) - default 16x16
+export const OJIcon = ({ size = 16 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 16 16" fill="none">
     <path d="M5.33325 6.66663L1.33325 3.99996L2.66659 9.33329H13.3333L14.6666 3.99996L10.6666 6.66663L7.99992 2.66663L5.33325 6.66663Z" fill="white"/>
     <path d="M2.66659 12C2.66659 11.2636 3.26354 10.6666 3.99992 10.6666H11.9999C12.7363 10.6666 13.3333 11.2636 13.3333 12C13.3333 12.7363 12.7363 13.3333 11.9999 13.3333H3.99992C3.26354 13.3333 2.66659 12.7363 2.66659 12Z" fill="white"/>
   </svg>

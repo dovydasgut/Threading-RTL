@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { getRandomColor } from './utils';
 import {
   OJIcon,
   GuestIcon,
@@ -30,14 +31,18 @@ export const UserButton = ({ isOJ = false, label, bgColor = '#fa7e0a', arrowColo
 );
 
 // Location Item Component
-export const LocationItem = ({ distance = "close" }) => (
-  <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-    <div style={{ width: '20px', height: '20px', position: 'relative' }}>
-      <LocationIcon />
+export const LocationItem = ({ distance = "close" }) => {
+  // Translate distance to Arabic
+  const distanceText = distance === "close" ? "قريب" : distance === "far" ? "بعيد" : distance;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+      <div style={{ width: '20px', height: '20px', position: 'relative' }}>
+        <LocationIcon />
+      </div>
+      <span style={{ color: 'white', fontSize: '10px', fontFamily: '"GothamBook", Gotham, sans-serif', lineHeight: '12px' }}>{distanceText}</span>
     </div>
-    <span style={{ color: 'white', fontSize: '10px', fontFamily: '"GothamBook", Gotham, sans-serif', lineHeight: '12px' }}>{distance}</span>
-  </div>
-);
+  );
+};
 
 // Channel Tag Component
 export const ChannelTag = ({ channel = "@main" }) => (
@@ -49,8 +54,8 @@ export const ChannelTag = ({ channel = "@main" }) => (
 // Timestamp Component
 export const Timestamp = ({ duration = "2 min", isYou = false }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-    <span style={{ color: 'white', fontSize: '10px', fontFamily: '"GothamBook", Gotham, sans-serif', lineHeight: '12px' }}>• {duration} ago</span>
-    {isYou && <span style={{ color: 'white', fontSize: '10px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, lineHeight: '12px' }}>• You</span>}
+    <span style={{ color: 'white', fontSize: '10px', fontFamily: '"GothamBook", Gotham, sans-serif', lineHeight: '12px' }}>• قبل {duration}</span>
+    {isYou && <span style={{ color: 'white', fontSize: '10px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, lineHeight: '12px' }}>• أنت</span>}
   </div>
 );
 
@@ -131,7 +136,7 @@ export const ReplyBanner = ({ userNumber, onClose }) => (
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap'
     }}>
-      Replying to <span style={{ fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>@{userNumber}</span>
+      رد على <span style={{ fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>@{userNumber}</span>
     </div>
     <button
       onClick={onClose}
@@ -156,8 +161,8 @@ export const PostBar = ({ inputValue, setInputValue, isActive, setIsActive, onPo
   const placeholder = customPlaceholder
     ? customPlaceholder
     : replyingTo
-      ? `Add a reply to @${replyingTo.userNumber}`
-      : '#GoodVibesOnly';
+      ? `أضف تعليق لـ @${replyingTo.userNumber}`
+      : '#أجواء_حلوة';
 
   // Auto-resize textarea
   const handleTextareaChange = (e) => {
@@ -418,35 +423,23 @@ export const SwipeableReply = ({ children, onReply, disabled = false }) => {
   );
 };
 
-// Author Pill Component for ReplyActivity
-const AuthorPill = ({ userNumber, isOJ = false }) => (
-  <div style={{
-    height: '24px',
-    paddingTop: '2px',
-    paddingBottom: '2px',
-    borderRadius: '16px',
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    gap: '2px',
-    overflow: 'hidden',
-  }}>
+// Author Pill Component for ReplyActivity - border only, no background
+const AuthorPill = ({ userNumber, isOJ = false }) => {
+  return (
     <div style={{
+      height: '20px',
       paddingLeft: '4px',
-      paddingRight: '8px',
-      paddingTop: '2px',
-      paddingBottom: '2px',
-      borderRadius: '9.41px',
-      outline: '1px solid rgba(255, 255, 255, 0.3)',
-      outlineOffset: '-1px',
-      display: 'flex',
-      justifyContent: 'flex-start',
+      paddingRight: '6px',
+      borderRadius: '10px',
+      border: '1px solid rgba(255, 255, 255, 0.5)',
+      backgroundColor: 'transparent',
+      display: 'inline-flex',
       alignItems: 'center',
-      gap: '4px',
-      overflow: 'hidden',
+      gap: '2px',
+      flexShrink: 0,
     }}>
+      {isOJ ? <OJIcon size={12} /> : <GuestIcon />}
       <span style={{
-        textAlign: 'center',
         color: 'white',
         fontSize: '10px',
         fontFamily: '"GothamBold", Gotham, sans-serif',
@@ -455,19 +448,19 @@ const AuthorPill = ({ userNumber, isOJ = false }) => (
       }}>
         {isOJ ? 'OJ' : userNumber}
       </span>
-      {isOJ ? <OJIcon /> : <GuestIcon />}
     </div>
-  </div>
-);
+  );
+};
 
-// Arrow icon for ReplyActivity (pointing right in RTL context)
+// Arrow icon for ReplyActivity (pointing right)
 const ActivityArrowIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M7.5 15L12.5 10L7.5 5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M3.30874 8.32111L10.477 8.32111L7.98706 10.8734C7.73678 11.13 7.73678 11.551 7.98706 11.8075C8.10696 11.9307 8.26974 11.9999 8.43949 11.9999C8.60925 11.9999 8.77203 11.9307 8.89192 11.8075L12.4793 8.13035C12.7296 7.8738 12.7296 7.45938 12.4793 7.20283L8.89192 3.52566C8.64164 3.26912 8.23734 3.26912 7.98706 3.52566C7.73678 3.78221 7.73678 4.19663 7.98706 4.45318L10.477 7.00549L3.30874 7.00549C2.95578 7.00549 2.66699 7.3015 2.66699 7.6633C2.66699 8.0251 2.95578 8.32111 3.30874 8.32111Z" fill="white"/>
   </svg>
 );
 
 // ReplyActivity Component - Shows activity notification for replies in threads
+// Layout: arrow on LEFT, content on RIGHT
 export const ReplyActivity = ({
   timestamp = '1h ago',
   authorNumber,
@@ -481,39 +474,25 @@ export const ReplyActivity = ({
       onClick={onClick}
       style={{
         width: '100%',
-        padding: '12px 16px',
+        padding: '16px',
         backgroundColor: '#009d52',
         display: 'flex',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        overflow: 'hidden',
         cursor: onClick ? 'pointer' : 'default',
-        direction: 'rtl',
+        boxSizing: 'border-box',
       }}
     >
-      {/* Content row */}
+      {/* Content - LEFT in JSX but will be on RIGHT visually */}
       <div style={{
         display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         gap: '4px',
-        flex: 1,
       }}>
-        {/* Author pill */}
-        <AuthorPill userNumber={authorNumber} isOJ={authorIsOJ} />
-
-        {/* "replied in a thread of" text */}
-        <span style={{
-          color: 'white',
-          fontSize: '10px',
-          fontFamily: '"GothamBook", Gotham, sans-serif',
-          fontWeight: 500,
-          lineHeight: '12px',
-        }}>
-          replied in a thread of
-        </span>
-
-        {/* Target user pill */}
-        <AuthorPill userNumber={targetUserNumber} isOJ={targetIsOJ} />
-
         {/* Timestamp */}
         <span style={{
           color: 'white',
@@ -522,17 +501,42 @@ export const ReplyActivity = ({
           fontWeight: 500,
           lineHeight: '12px',
         }}>
-          • {timestamp}
+          {timestamp} •
         </span>
+
+        {/* Author pill */}
+        <AuthorPill userNumber={authorNumber} isOJ={authorIsOJ} />
+
+        {/* "علق في ثريد" text */}
+        <span style={{
+          color: 'white',
+          fontSize: '10px',
+          fontFamily: '"GothamBook", Gotham, sans-serif',
+          fontWeight: 500,
+          lineHeight: '12px',
+        }}>
+          علق في ثريد
+        </span>
+
+        {/* Target user pill */}
+        <AuthorPill userNumber={targetUserNumber} isOJ={targetIsOJ} />
       </div>
 
-      {/* Arrow icon on the left (visually on right in RTL) */}
+      {/* Arrow button - RIGHT in JSX but will be on LEFT visually */}
       <div style={{
+        width: '24px',
+        height: '24px',
+        minWidth: '24px',
+        backgroundColor: 'transparent',
+        borderRadius: '9999px',
+        border: '1px solid white',
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
+        boxSizing: 'border-box',
+        flexShrink: 0,
       }}>
-        <ActivityArrowIcon />
+        <GoToReplyArrowIcon />
       </div>
     </div>
   );

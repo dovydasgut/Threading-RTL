@@ -43,8 +43,10 @@ export default function ThreadingApp() {
   const [openThread, setOpenThread] = useState(null); // null or { parent, subReplies }
   const [scrollBackToReplyId, setScrollBackToReplyId] = useState(null);
   const [scrollBackToParentId, setScrollBackToParentId] = useState(null);
+  const [scrollBackToActivityId, setScrollBackToActivityId] = useState(null);
   const mainScrollRef = useRef(null);
   const threadScrollRef = useRef(null);
+  const activityRefs = useRef({});
 
   // Vote states for main post
   const [mainPostVotes, setMainPostVotes] = useState(mockData.posts[0].votes);
@@ -155,11 +157,20 @@ export default function ThreadingApp() {
   };
 
   // Handle opening a thread view
-  const handleOpenThread = (parent, subReplies, lastVisibleReplyId = null, scrollToReplyId = null) => {
-    // Save the reply ID that was clicked so we can scroll back to it
-    // Also save parent ID as fallback if subreply is not visible
-    setScrollBackToReplyId(scrollToReplyId || parent.id);
-    setScrollBackToParentId(parent.id);
+  // scrollBackActivityId: if provided, we scroll back to an activity instead of a reply
+  const handleOpenThread = (parent, subReplies, lastVisibleReplyId = null, scrollToReplyId = null, scrollBackActivityId = null) => {
+    // If opening from an activity, save the activity ID for scroll-back
+    if (scrollBackActivityId) {
+      setScrollBackToActivityId(scrollBackActivityId);
+      setScrollBackToReplyId(null);
+      setScrollBackToParentId(null);
+    } else {
+      // Save the reply ID that was clicked so we can scroll back to it
+      // Also save parent ID as fallback if subreply is not visible
+      setScrollBackToActivityId(null);
+      setScrollBackToReplyId(scrollToReplyId || parent.id);
+      setScrollBackToParentId(parent.id);
+    }
 
     // Calculate the offset of the last visible reply from the top of the viewport
     let replyOffsetFromTop = null;
@@ -347,28 +358,36 @@ export default function ThreadingApp() {
     }));
   };
 
-  // Scroll back to the reply when returning from thread view
+  // Scroll back to the reply or activity when returning from thread view
   useEffect(() => {
-    if (!openThread && scrollBackToReplyId) {
+    if (!openThread && (scrollBackToReplyId || scrollBackToActivityId)) {
       // Wait for DOM to be ready
       setTimeout(() => {
-        // Try to scroll to the exact reply first
-        let replyElement = replyRefs.current[scrollBackToReplyId];
+        let elementToScroll = null;
 
-        // If subreply is not visible (hidden), fall back to parent reply
-        if (!replyElement && scrollBackToParentId) {
-          replyElement = replyRefs.current[scrollBackToParentId];
+        // Check if we should scroll to an activity first
+        if (scrollBackToActivityId && activityRefs.current[scrollBackToActivityId]) {
+          elementToScroll = activityRefs.current[scrollBackToActivityId];
+        } else if (scrollBackToReplyId) {
+          // Try to scroll to the exact reply first
+          elementToScroll = replyRefs.current[scrollBackToReplyId];
+
+          // If subreply is not visible (hidden), fall back to parent reply
+          if (!elementToScroll && scrollBackToParentId) {
+            elementToScroll = replyRefs.current[scrollBackToParentId];
+          }
         }
 
-        if (replyElement) {
-          replyElement.scrollIntoView({ behavior: 'instant', block: 'center' });
+        if (elementToScroll) {
+          elementToScroll.scrollIntoView({ behavior: 'instant', block: 'center' });
         }
 
         setScrollBackToReplyId(null);
         setScrollBackToParentId(null);
+        setScrollBackToActivityId(null);
       }, 50);
     }
-  }, [openThread, scrollBackToReplyId, scrollBackToParentId]);
+  }, [openThread, scrollBackToReplyId, scrollBackToParentId, scrollBackToActivityId]);
 
   // Handle opening a post from feed
   const handleOpenPost = (feedPost) => {
@@ -408,31 +427,52 @@ export default function ThreadingApp() {
         <div style={{ backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '48px', padding: '0 16px', position: 'sticky', top: 0, zIndex: 100 }}>
           <div style={{ flex: 1 }}>
             <div style={{ backgroundColor: '#f2f2f6', borderRadius: '9999px', padding: '8px', display: 'inline-flex', alignItems: 'center' }}>
-              <span style={{ color: '#404044', fontSize: '12px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>Upgrade</span>
+              <span style={{ color: '#404044', fontSize: '12px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>ترقية</span>
             </div>
           </div>
           <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2px' }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fillRule="evenodd" clipRule="evenodd" d="M6 10.271C6 6.80403 8.68286 4 12 4C15.3171 4 18 6.80403 18 10.271C18 13.3947 15.3511 16.4996 13.5762 18.5801C13.2284 18.9878 12.9142 19.3561 12.66 19.6775C12.3171 20.1075 11.6914 20.1075 11.3486 19.6775C11.0967 19.3607 10.7867 18.9983 10.4439 18.5977C8.66383 16.5171 6 13.4035 6 10.271ZM9.85714 10C9.85714 11.1829 10.8171 12.1429 12 12.1429C13.1829 12.1429 14.1429 11.1829 14.1429 10C14.1429 8.81715 13.1829 7.85715 12 7.85715C10.8171 7.85715 9.85714 8.81715 9.85714 10Z" fill="#FA7E0A"/>
             </svg>
-            <span style={{ color: '#404044', fontSize: '16px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>Berlin</span>
+            <span style={{ color: '#404044', fontSize: '16px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>الرياض</span>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M14.6241 6.96286L9.99468 10.891L5.3653 6.96286C5.14239 6.77329 4.83975 6.66675 4.52414 6.66675C4.20853 6.66675 3.90589 6.77329 3.68298 6.96286C3.21765 7.3577 3.21765 7.99551 3.68298 8.39035L9.15949 13.0373C9.62481 13.4321 10.3765 13.4321 10.8418 13.0373L16.3183 8.39035C16.7836 7.99551 16.7836 7.3577 16.3183 6.96286C15.853 6.57815 15.0894 6.56802 14.6241 6.96286Z" fill="#8C8C90"/>
             </svg>
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
             <span style={{ color: '#404044', fontSize: '14px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>100500</span>
-            <span style={{ color: '#FA7E0A', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, textTransform: 'uppercase' }}>MY KARMA</span>
+            <span style={{ color: '#FA7E0A', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, textTransform: 'uppercase' }}>نقاطي</span>
           </div>
+        </div>
+
+        {/* Test App Banner */}
+        <div style={{
+          backgroundColor: '#E84C4C',
+          padding: '12px 16px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'sticky',
+          top: '48px',
+          zIndex: 99
+        }}>
+          <span style={{
+            color: 'white',
+            fontSize: '16px',
+            fontFamily: '"GothamBook", Gotham, sans-serif',
+            fontWeight: 400,
+            textAlign: 'center',
+            direction: 'ltr'
+          }}>تطبيق تجريبي. يمكنك النشر والتعليق بأمان.</span>
         </div>
 
         {/* Tabs */}
         <div style={{ backgroundColor: 'white', display: 'flex', alignItems: 'center', borderBottom: '1px solid #f2f2f6' }}>
           <div style={{ flex: 1, padding: '8px 40px 16px', display: 'flex', justifyContent: 'center', alignItems: 'center', opacity: 0.3 }}>
-            <span style={{ color: '#8C8C90', fontSize: '16px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>Top 10</span>
+            <span style={{ color: '#8C8C90', fontSize: '16px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>الأعلى ١٠</span>
           </div>
           <div style={{ flex: 1, padding: '8px 40px 16px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
-            <span style={{ color: '#404044', fontSize: '16px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>Home</span>
+            <span style={{ color: '#404044', fontSize: '16px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>الرئيسية</span>
             <div style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '112px', height: '3px', backgroundColor: '#FA7E0A', borderRadius: '9999px' }} />
           </div>
         </div>
@@ -440,13 +480,13 @@ export default function ThreadingApp() {
         {/* Sorting Bar */}
         <div style={{ backgroundColor: 'white', padding: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{ backgroundColor: '#FA7E0A', borderRadius: '9999px', padding: '8px', display: 'flex', alignItems: 'center' }}>
-            <span style={{ color: 'white', fontSize: '12px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>Newest</span>
+            <span style={{ color: 'white', fontSize: '12px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>الأحدث</span>
           </div>
           <div style={{ backgroundColor: '#f2f2f6', borderRadius: '9999px', padding: '8px', display: 'flex', alignItems: 'center' }}>
-            <span style={{ color: '#404044', fontSize: '12px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>Most Commented</span>
+            <span style={{ color: '#404044', fontSize: '12px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>الأكثر تعليقاً</span>
           </div>
           <div style={{ backgroundColor: '#f2f2f6', borderRadius: '9999px', padding: '8px', display: 'flex', alignItems: 'center' }}>
-            <span style={{ color: '#404044', fontSize: '12px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>Loudest</span>
+            <span style={{ color: '#404044', fontSize: '12px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>الأكثر تفاعلاً</span>
           </div>
         </div>
 
@@ -570,7 +610,7 @@ export default function ThreadingApp() {
     // Get live subReplies from current replies state instead of stale snapshot
     const subReplies = replies.filter(r => r.parentId === parent.id);
     const parentLabel = parent.userType === 'OJ' ? 'OJ' : parent.userNumber;
-    const threadPlaceholder = `Reply to @${parentLabel} thread`;
+    const threadPlaceholder = `علق على ثريد @${parentLabel}`;
 
     // Truncate parent text for header
     const truncatedText = parent.text.length > 50 ? parent.text.substring(0, 50) + '...' : parent.text;
@@ -611,13 +651,8 @@ export default function ThreadingApp() {
               // Parent reply - scroll to top
               el.scrollTop = 0;
             } else if (openThread.scrollToReplyId) {
-              // Sub-reply - scroll to it after a brief delay for refs to be set
-              setTimeout(() => {
-                const replyElement = replyRefs.current[openThread.scrollToReplyId];
-                if (replyElement) {
-                  replyElement.scrollIntoView({ behavior: 'instant', block: 'start' });
-                }
-              }, 50);
+              // Sub-reply - always scroll to top of thread view
+              el.scrollTop = 0;
             } else if (openThread.lastVisibleReplyId && openThread.replyOffsetFromTop !== null) {
               // "Open thread" button case
               setTimeout(() => {
@@ -684,14 +719,8 @@ export default function ThreadingApp() {
                       style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '9999px', padding: '2px 4px', display: 'flex', alignItems: 'center', gap: '2px', border: 'none', cursor: 'pointer' }}
                     >
                       <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white' }} />
-                      <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, textTransform: 'uppercase' }}>Reply</span>
+                      <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>علّق</span>
                     </button>
-                  </div>
-
-                  {/* Reply count */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '8px' }}>
-                    <CommentIcon />
-                    <span style={{ color: 'white', fontSize: '10px', fontFamily: '"GothamBook", Gotham, sans-serif', lineHeight: '12px' }}>{subReplies.length}</span>
                   </div>
                 </div>
               </SwipeableReply>
@@ -778,7 +807,7 @@ export default function ThreadingApp() {
                       style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '9999px', padding: '2px 4px', display: 'flex', alignItems: 'center', gap: '2px', border: 'none', cursor: 'pointer' }}
                     >
                       <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white' }} />
-                      <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, textTransform: 'uppercase' }}>Reply</span>
+                      <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>علّق</span>
                     </button>
                   </div>
                 </div>
@@ -880,25 +909,30 @@ export default function ThreadingApp() {
             if (item.type === 'activity') {
               const activity = item.data;
               return (
-                <ReplyActivity
+                <div
                   key={activity.id}
-                  timestamp={activity.duration}
-                  authorNumber={activity.authorUserNumber}
-                  authorIsOJ={activity.authorIsOJ}
-                  targetUserNumber={activity.targetUserNumber}
-                  targetIsOJ={activity.targetIsOJ}
-                  onClick={() => {
-                    // Find the parent thread and navigate to it
-                    const targetReply = replies.find(r => r.id === activity.targetReplyId);
-                    if (targetReply) {
-                      const threads = organizeRepliesIntoThreads(replies);
-                      const thread = threads.find(t => t.parent.id === activity.targetReplyId);
-                      if (thread) {
-                        handleOpenThread(thread.parent, thread.subReplies, null, activity.subreplyId);
+                  ref={el => activityRefs.current[activity.id] = el}
+                >
+                  <ReplyActivity
+                    timestamp={activity.duration}
+                    authorNumber={activity.authorUserNumber}
+                    authorIsOJ={activity.authorIsOJ}
+                    targetUserNumber={activity.targetUserNumber}
+                    targetIsOJ={activity.targetIsOJ}
+                    onClick={() => {
+                      // Find the parent thread and navigate to it
+                      const targetReply = replies.find(r => r.id === activity.targetReplyId);
+                      if (targetReply) {
+                        const threads = organizeRepliesIntoThreads(replies);
+                        const thread = threads.find(t => t.parent.id === activity.targetReplyId);
+                        if (thread) {
+                          // Pass activity.id as the last parameter to scroll back to this activity
+                          handleOpenThread(thread.parent, thread.subReplies, null, activity.subreplyId, activity.id);
+                        }
                       }
-                    }
-                  }}
-                />
+                    }}
+                  />
+                </div>
               );
             }
 
@@ -998,7 +1032,7 @@ export default function ThreadingApp() {
                             style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '9999px', padding: '2px 4px', display: 'flex', alignItems: 'center', gap: '2px', border: 'none', cursor: 'pointer' }}
                           >
                             <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white' }} />
-                            <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, textTransform: 'uppercase' }}>Reply</span>
+                            <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>علّق</span>
                           </button>
                         </div>
                       </div>
@@ -1088,7 +1122,7 @@ export default function ThreadingApp() {
                             style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '9999px', padding: '2px 4px', display: 'flex', alignItems: 'center', gap: '2px', border: 'none', cursor: 'pointer' }}
                           >
                             <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white' }} />
-                            <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, textTransform: 'uppercase' }}>Reply</span>
+                            <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600 }}>علّق</span>
                           </button>
                         </div>
                       </div>
@@ -1141,138 +1175,212 @@ export default function ThreadingApp() {
                         const visibleIds = new Set(visibleSubReplies.map(r => r.id));
                         const hiddenReplies = subReplies.filter(r => !visibleIds.has(r.id));
 
-                        // Check for OJ in hidden replies
-                        const hasOJInHidden = hiddenReplies.some(r => r.userType === 'OJ');
+                        // Check for OJ in hidden replies - check both userType === 'OJ' and the absence of userNumber
+                        const ojReplies = hiddenReplies.filter(r => r.userType === 'OJ');
+                        const hasOJInHidden = ojReplies.length > 0;
+
                         // Check for current user in hidden replies
                         const hasUserInHidden = hiddenReplies.some(r => r.userNumber === myUserNumber);
+
                         // Get other unique users in hidden replies (excluding OJ and current user)
                         const otherUsers = [...new Set(hiddenReplies
-                          .filter(r => r.userType !== 'OJ' && r.userNumber !== myUserNumber)
+                          .filter(r => r.userType !== 'OJ' && r.userNumber !== myUserNumber && r.userNumber !== null)
                           .map(r => r.userNumber))];
 
-                        const avatars = [];
-                        let avatarCount = 0;
+                        // Total unique participants in hidden replies
+                        const totalHiddenParticipants = (hasOJInHidden ? 1 : 0) + (hasUserInHidden ? 1 : 0) + otherUsers.length;
+
+                        // Build avatars in visual order (left to right): [OJ] [ME/other] [other/count]
+                        // Always show 3 avatars when there are 3+ unique participants
+                        // z-index: first (leftmost) has highest z-index, last (rightmost) has lowest
+                        const avatarData = [];
                         const maxAvatars = 3;
 
-                        // Add OJ avatar if present
-                        if (hasOJInHidden && avatarCount < maxAvatars) {
-                          avatars.push(
-                            <div key="oj" style={{
-                              width: '20px',
-                              height: '20px',
-                              padding: '2px',
-                              backgroundColor: '#009d52',
-                              borderRadius: '9999px',
-                              outline: '1px solid white',
-                              outlineOffset: '-1px',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              marginLeft: avatarCount > 0 ? '-6px' : '0'
-                            }}>
-                              <OJIcon />
-                            </div>
-                          );
-                          avatarCount++;
+                        // Determine slots available for non-priority users
+                        let usedSlots = 0;
+
+                        // Add OJ first (leftmost, highest z-index) if OJ is in hidden
+                        if (hasOJInHidden) {
+                          avatarData.push({ key: 'oj', type: 'oj' });
+                          usedSlots++;
                         }
 
-                        // Add current user avatar if present
-                        if (hasUserInHidden && avatarCount < maxAvatars) {
-                          const userColor = getRandomColor(myUserNumber);
-                          avatars.push(
-                            <div key="user" style={{
-                              width: '20px',
-                              height: '20px',
-                              padding: '2px',
-                              backgroundColor: userColor,
-                              borderRadius: '9999px',
-                              outline: '1px solid white',
-                              outlineOffset: '-1px',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              marginLeft: avatarCount > 0 ? '-6px' : '0'
-                            }}>
-                              <GuestIcon />
-                            </div>
-                          );
-                          avatarCount++;
+                        // Add current user (ME) second if user is in hidden
+                        if (hasUserInHidden) {
+                          avatarData.push({ key: 'user', type: 'me', userNumber: myUserNumber });
+                          usedSlots++;
                         }
 
-                        // Add other users or count
-                        if (otherUsers.length > 0 && avatarCount < maxAvatars) {
-                          const remainingSlots = maxAvatars - avatarCount;
-                          const usersToShow = otherUsers.slice(0, remainingSlots);
-                          const remainingUsers = otherUsers.length - usersToShow.length;
+                        // Calculate remaining slots
+                        const remainingSlots = maxAvatars - usedSlots;
 
-                          // Show individual user avatars
-                          usersToShow.forEach((userNum, idx) => {
-                            const color = getRandomColor(userNum);
-                            avatars.push(
-                              <div key={`user-${userNum}`} style={{
-                                width: '20px',
-                                height: '20px',
-                                padding: '2px',
-                                backgroundColor: color,
-                                borderRadius: '9999px',
-                                outline: '1px solid white',
-                                outlineOffset: '-1px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginLeft: avatarCount > 0 || idx > 0 ? '-6px' : '0'
-                              }}>
-                                <span style={{
-                                  width: '16px',
-                                  height: '16px',
-                                  textAlign: 'center',
-                                  color: 'white',
-                                  fontSize: '8px',
-                                  fontFamily: '"GothamBold", Gotham, sans-serif',
-                                  fontWeight: 500,
-                                  lineHeight: '16px',
-                                  textTransform: 'uppercase'
-                                }}>{userNum}</span>
-                              </div>
-                            );
-                          });
-                          avatarCount += usersToShow.length;
+                        // Fill remaining slots with other users and/or count badge
+                        if (otherUsers.length > 0 && remainingSlots > 0) {
+                          if (otherUsers.length <= remainingSlots) {
+                            // All others fit - show them all as individual avatars
+                            otherUsers.forEach((userNum) => {
+                              avatarData.push({ key: `user-${userNum}`, type: 'other', userNumber: userNum });
+                            });
+                          } else {
+                            // Too many others - show some avatars + count badge
+                            // Reserve last slot for count badge, fill others with user avatars
+                            const avatarSlots = remainingSlots - 1; // Save 1 slot for count
+                            const remainingCount = otherUsers.length - avatarSlots;
 
-                          // If there are more users, show count badge
-                          if (remainingUsers > 0 && avatarCount < maxAvatars) {
-                            avatars.push(
-                              <div key="count" style={{
-                                width: '20px',
-                                height: '20px',
-                                padding: '2px',
-                                backgroundColor: '#009d52',
-                                borderRadius: '9999px',
-                                outline: '1px solid white',
-                                outlineOffset: '-1px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginLeft: '-6px'
-                              }}>
-                                <span style={{
-                                  width: '16px',
-                                  height: '16px',
-                                  textAlign: 'center',
-                                  color: 'white',
-                                  fontSize: '8px',
-                                  fontFamily: '"GothamBold", Gotham, sans-serif',
-                                  fontWeight: 500,
-                                  lineHeight: '16px',
-                                  textTransform: 'uppercase'
-                                }}>{remainingUsers}+</span>
-                              </div>
-                            );
+                            // Add individual user avatars
+                            otherUsers.slice(0, avatarSlots).forEach((userNum) => {
+                              avatarData.push({ key: `user-${userNum}`, type: 'other', userNumber: userNum });
+                            });
+
+                            // Add count badge for remaining users
+                            avatarData.push({ key: 'count', type: 'count', count: remainingCount });
                           }
                         }
 
+                        // Limit to max 3 avatars (should already be <= 3 due to logic above)
+                        const finalAvatars = avatarData.slice(0, maxAvatars);
+                        const totalAvatars = finalAvatars.length;
+
                         return (
                           <div style={{ display: 'flex', alignItems: 'center', position: 'relative', zIndex: 2 }}>
-                            {avatars}
+                            {finalAvatars.map((avatar, idx) => {
+                              const isFirst = idx === 0;
+                              // Last item (rightmost) has highest z-index, first has lowest
+                              const zIndex = idx + 1;
+
+                              if (avatar.type === 'oj') {
+                                return (
+                                  <div key={avatar.key} style={{
+                                    width: '20px',
+                                    minWidth: '20px',
+                                    maxWidth: '20px',
+                                    height: '20px',
+                                    minHeight: '20px',
+                                    maxHeight: '20px',
+                                    backgroundColor: '#009d52',
+                                    borderRadius: '9999px',
+                                    outline: '1px solid white',
+                                    outlineOffset: '-1px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginLeft: isFirst ? '0' : '-6px',
+                                    position: 'relative',
+                                    zIndex,
+                                    overflow: 'hidden',
+                                    boxSizing: 'border-box'
+                                  }}>
+                                    <OJIcon size={12} />
+                                  </div>
+                                );
+                              }
+
+                              if (avatar.type === 'me') {
+                                const userColor = getRandomColor(avatar.userNumber);
+                                return (
+                                  <div key={avatar.key} style={{
+                                    width: '20px',
+                                    minWidth: '20px',
+                                    maxWidth: '20px',
+                                    height: '20px',
+                                    minHeight: '20px',
+                                    maxHeight: '20px',
+                                    backgroundColor: userColor,
+                                    borderRadius: '9999px',
+                                    outline: '1px solid white',
+                                    outlineOffset: '-1px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginLeft: isFirst ? '0' : '-6px',
+                                    position: 'relative',
+                                    zIndex,
+                                    overflow: 'hidden',
+                                    boxSizing: 'border-box'
+                                  }}>
+                                    <span style={{
+                                      color: 'white',
+                                      fontSize: '8px',
+                                      fontFamily: '"GothamBold", Gotham, sans-serif',
+                                      fontWeight: 600,
+                                      lineHeight: '1',
+                                      textAlign: 'center'
+                                    }}>{avatar.userNumber}</span>
+                                  </div>
+                                );
+                              }
+
+                              if (avatar.type === 'other') {
+                                const color = getRandomColor(avatar.userNumber);
+                                return (
+                                  <div key={avatar.key} style={{
+                                    width: '20px',
+                                    minWidth: '20px',
+                                    maxWidth: '20px',
+                                    height: '20px',
+                                    minHeight: '20px',
+                                    maxHeight: '20px',
+                                    backgroundColor: color,
+                                    borderRadius: '9999px',
+                                    outline: '1px solid white',
+                                    outlineOffset: '-1px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginLeft: isFirst ? '0' : '-6px',
+                                    position: 'relative',
+                                    zIndex,
+                                    overflow: 'hidden',
+                                    boxSizing: 'border-box'
+                                  }}>
+                                    <span style={{
+                                      color: 'white',
+                                      fontSize: '8px',
+                                      fontFamily: '"GothamBold", Gotham, sans-serif',
+                                      fontWeight: 600,
+                                      lineHeight: '1',
+                                      textAlign: 'center'
+                                    }}>{avatar.userNumber}</span>
+                                  </div>
+                                );
+                              }
+
+                              if (avatar.type === 'count') {
+                                return (
+                                  <div key={avatar.key} style={{
+                                    width: '20px',
+                                    minWidth: '20px',
+                                    maxWidth: '20px',
+                                    height: '20px',
+                                    minHeight: '20px',
+                                    maxHeight: '20px',
+                                    backgroundColor: '#6B7280',
+                                    borderRadius: '9999px',
+                                    outline: '1px solid white',
+                                    outlineOffset: '-1px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginLeft: isFirst ? '0' : '-6px',
+                                    position: 'relative',
+                                    zIndex,
+                                    overflow: 'hidden',
+                                    boxSizing: 'border-box'
+                                  }}>
+                                    <span style={{
+                                      textAlign: 'center',
+                                      color: 'white',
+                                      fontSize: '8px',
+                                      fontFamily: '"GothamBold", Gotham, sans-serif',
+                                      fontWeight: 600,
+                                      lineHeight: '1'
+                                    }}>+{avatar.count}</span>
+                                  </div>
+                                );
+                              }
+
+                              return null;
+                            })}
                           </div>
                         );
                       })()}
@@ -1283,7 +1391,7 @@ export default function ThreadingApp() {
                         fontFamily: '"GothamBold", Gotham, sans-serif',
                         fontWeight: 600
                       }}>
-                        {hasHiddenReplies ? `Show ${hiddenCount} replies` : 'Open thread'}
+                        {hasHiddenReplies ? `عرض ${hiddenCount} تعليق` : 'افتح الثريد'}
                       </span>
                       <ArrowRightSmall />
                     </button>
