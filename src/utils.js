@@ -37,3 +37,30 @@ export const organizeRepliesIntoThreads = (replies) => {
 
   return threads;
 };
+
+// Helper function to organize replies and activities into a chronological feed
+// Activities appear between parent replies (threads), never interrupting subreplies
+export const organizeRepliesWithActivities = (replies, activities = []) => {
+  const threads = organizeRepliesIntoThreads(replies);
+
+  // Create feed items from threads
+  const feedItems = threads.map(thread => ({
+    type: 'thread',
+    timestamp: thread.parent.timestamp,
+    data: thread
+  }));
+
+  // Add activities as feed items
+  activities.forEach(activity => {
+    feedItems.push({
+      type: 'activity',
+      timestamp: activity.timestamp,
+      data: activity
+    });
+  });
+
+  // Sort all items chronologically by timestamp
+  feedItems.sort((a, b) => a.timestamp - b.timestamp);
+
+  return feedItems;
+};

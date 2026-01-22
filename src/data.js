@@ -24,6 +24,18 @@ export const mockData = {
       "text": "Engineering brothers, I need real advice. Graduating mechanical engineering next semester inshallah. Everyone keeps saying 'Aramco or nothing' but I know it's not that simple anymore. Where are the actual opportunities in Riyadh right now? Not looking for wasta answers, I want to know what companies are actually hiring fresh grads and treating them well. NEOM? SABIC? The new giga projects? What's the real situation on the ground?",
       "hashtag": "#engineering",
       "votes": 89
+    },
+    {
+      "id": 3,
+      "userType": "OJ",
+      "userNumber": null,
+      "channel": "@careers",
+      "distance": "close",
+      "duration": "12 min",
+      "timestamp": 1705319400000,
+      "text": "Engineering brothers, I need real advice. Graduating mechanical engineering next semester inshallah. Everyone keeps saying 'Aramco or nothing' but I know it's not that simple anymore. Where are the actual opportunities in Riyadh right now? Not looking for wasta answers, I want to know what companies are actually hiring fresh grads and treating them well. NEOM? SABIC? The new giga projects? What's the real situation on the ground?",
+      "hashtag": "#engineering",
+      "votes": 89
     }
   ],
   "repliesByPostId": {
@@ -425,6 +437,96 @@ export const mockData = {
         "timestamp": 1705319860000,
         "votes": 19,
         "parentId": 120
+      }
+    ],
+    "3": [
+      {
+        "id": 301,
+        "userNumber": 13,
+        "text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod temasdasdpor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+        "distance": "close",
+        "duration": "1h",
+        "timestamp": 1705316000000,
+        "votes": 256,
+        "parentId": null
+      },
+      {
+        "id": 302,
+        "userNumber": 14,
+        "text": "@13 Great point! This is exactly what I was thinking.",
+        "distance": "close",
+        "duration": "55 min",
+        "timestamp": 1705316300000,
+        "votes": 45,
+        "parentId": 301
+      },
+      {
+        "id": 303,
+        "userNumber": 15,
+        "text": "@13 Can you elaborate more on this?",
+        "distance": "far",
+        "duration": "50 min",
+        "timestamp": 1705316600000,
+        "votes": 23,
+        "parentId": 301
+      },
+      {
+        "id": 304,
+        "userNumber": 11,
+        "text": "Another perspective on this topic that I think is worth considering.",
+        "distance": "close",
+        "duration": "45 min",
+        "timestamp": 1705316900000,
+        "votes": 178,
+        "parentId": null
+      },
+      {
+        "id": 305,
+        "userNumber": 12,
+        "text": "@11 Interesting take! I hadn't thought about it this way.",
+        "distance": "close",
+        "duration": "40 min",
+        "timestamp": 1705317200000,
+        "votes": 67,
+        "parentId": 304
+      },
+      {
+        "id": 306,
+        "userNumber": 5,
+        "text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod temasdasdpor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+        "distance": "close",
+        "duration": "1h",
+        "timestamp": 1705317500000,
+        "votes": 256,
+        "parentId": null
+      },
+      {
+        "id": 307,
+        "userNumber": 16,
+        "text": "@5 This deserves more attention.",
+        "distance": "far",
+        "duration": "30 min",
+        "timestamp": 1705317800000,
+        "votes": 34,
+        "parentId": 306
+      }
+    ]
+  },
+  // Activities represent subreply notifications - shown between parent replies chronologically
+  // Each activity is generated when someone replies to a reply (creates a subreply)
+  "activitiesByPostId": {
+    "3": [
+      {
+        "id": "activity-1",
+        "type": "reply_activity",
+        "timestamp": 1705317100000,
+        "authorUserNumber": 12,
+        "authorIsOJ": false,
+        "targetUserNumber": 11,
+        "targetIsOJ": false,
+        "targetReplyId": 304,
+        "subreplyId": 305,
+        "duration": "1h"
       }
     ]
   },

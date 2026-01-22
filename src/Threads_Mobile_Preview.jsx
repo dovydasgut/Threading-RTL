@@ -26,7 +26,7 @@ import {
 import { mockData, OJ_COLOR } from './data';
 
 // Import utils
-import { getRandomColor, organizeRepliesIntoThreads } from './utils';
+import { getRandomColor, organizeRepliesIntoThreads, organizeRepliesWithActivities } from './utils';
 
 export default function ThreadingApp() {
   // For OJ, use the post's background color (green)
@@ -89,6 +89,9 @@ export default function ThreadingApp() {
     ...reply,
     voteState: 'default'
   })));
+
+  // Activities state - notifications for subreplies
+  const [activities, setActivities] = useState(mockData.activitiesByPostId?.[1] || []);
 
   // Current user's number - next chronological number after highest existing user
   const [myUserNumber] = useState(() => {
@@ -382,6 +385,8 @@ export default function ThreadingApp() {
       ...reply,
       voteState: 'default'
     })));
+    // Load activities for this post
+    setActivities(mockData.activitiesByPostId?.[feedPost.id] || []);
     setCurrentView('postDetail');
     // Clear reply state when navigating
     setReplyingTo(null);
@@ -868,21 +873,40 @@ export default function ThreadingApp() {
           </div>
         </div>
 
-        {/* ReplyActivity Preview - TEMPORARY FOR TESTING */}
-        <ReplyActivity
-          timestamp="1h ago"
-          authorNumber={13}
-          targetUserNumber={3}
-          onClick={() => console.log('Navigate to reply')}
-        />
-
-        {/* Dynamic Replies - Organized into threads */}
+        {/* Dynamic Replies and Activities - Organized chronologically */}
         {(() => {
-          const threads = organizeRepliesIntoThreads(replies);
+          const feedItems = organizeRepliesWithActivities(replies, activities);
           const MAX_VISIBLE_SUBREPLIES = 3;
 
-          return threads.map((thread) => {
-            const { parent, subReplies } = thread;
+          return feedItems.map((item) => {
+            // Render activity notification
+            if (item.type === 'activity') {
+              const activity = item.data;
+              return (
+                <ReplyActivity
+                  key={activity.id}
+                  timestamp={activity.duration}
+                  authorNumber={activity.authorUserNumber}
+                  authorIsOJ={activity.authorIsOJ}
+                  targetUserNumber={activity.targetUserNumber}
+                  targetIsOJ={activity.targetIsOJ}
+                  onClick={() => {
+                    // Find the parent thread and navigate to it
+                    const targetReply = replies.find(r => r.id === activity.targetReplyId);
+                    if (targetReply) {
+                      const threads = organizeRepliesIntoThreads(replies);
+                      const thread = threads.find(t => t.parent.id === activity.targetReplyId);
+                      if (thread) {
+                        handleOpenThread(thread.parent, thread.subReplies, null, activity.subreplyId);
+                      }
+                    }
+                  }}
+                />
+              );
+            }
+
+            // Render thread (parent reply with subreplies)
+            const { parent, subReplies } = item.data;
 
             // Check if user has a reply in this thread that would be hidden
             const userReplyInThread = subReplies.find(r => r.userNumber === myUserNumber);

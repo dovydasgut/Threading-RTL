@@ -460,6 +460,13 @@ const AuthorPill = ({ userNumber, isOJ = false }) => (
   </div>
 );
 
+// Arrow icon for ReplyActivity (pointing right in RTL context)
+const ActivityArrowIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7.5 15L12.5 10L7.5 5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
 // ReplyActivity Component - Shows activity notification for replies in threads
 export const ReplyActivity = ({
   timestamp = '1h ago',
@@ -474,45 +481,22 @@ export const ReplyActivity = ({
       onClick={onClick}
       style={{
         width: '100%',
-        padding: '16px',
-        position: 'relative',
+        padding: '12px 16px',
         backgroundColor: '#009d52',
-        display: 'inline-flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        gap: '16px',
-        overflow: 'hidden',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         cursor: onClick ? 'pointer' : 'default',
         direction: 'rtl',
       }}
     >
-      {/* Header row */}
+      {/* Content row */}
       <div style={{
-        alignSelf: 'stretch',
-        display: 'inline-flex',
-        justifyContent: 'flex-end',
+        display: 'flex',
         alignItems: 'center',
         gap: '4px',
+        flex: 1,
       }}>
-        {/* Timestamp */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          gap: '2px',
-        }}>
-          <span style={{
-            color: 'white',
-            fontSize: '10px',
-            fontFamily: '"GothamBook", Gotham, sans-serif',
-            fontWeight: 500,
-            lineHeight: '12px',
-          }}>
-            {timestamp} •
-          </span>
-        </div>
-
         {/* Author pill */}
         <AuthorPill userNumber={authorNumber} isOJ={authorIsOJ} />
 
@@ -529,27 +513,26 @@ export const ReplyActivity = ({
 
         {/* Target user pill */}
         <AuthorPill userNumber={targetUserNumber} isOJ={targetIsOJ} />
+
+        {/* Timestamp */}
+        <span style={{
+          color: 'white',
+          fontSize: '10px',
+          fontFamily: '"GothamBook", Gotham, sans-serif',
+          fontWeight: 500,
+          lineHeight: '12px',
+        }}>
+          • {timestamp}
+        </span>
       </div>
 
-      {/* Go to reply button - positioned at bottom left (RTL: bottom right visually) */}
+      {/* Arrow icon on the left (visually on right in RTL) */}
       <div style={{
-        position: 'absolute',
-        left: '40px',
-        top: '40px',
-        transform: 'rotate(180deg)',
-        transformOrigin: 'top left',
-        backgroundColor: '#009d52',
-        borderRadius: '9999px',
-        padding: '4px',
-        outline: '1px solid rgba(255, 255, 255, 0.3)',
-        outlineOffset: '-1px',
-        display: 'inline-flex',
-        justifyContent: 'center',
+        display: 'flex',
         alignItems: 'center',
-        gap: '8px',
-        overflow: 'hidden',
+        justifyContent: 'center',
       }}>
-        <GoToReplyArrowIcon />
+        <ActivityArrowIcon />
       </div>
     </div>
   );
