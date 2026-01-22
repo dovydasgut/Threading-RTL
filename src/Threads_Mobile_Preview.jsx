@@ -666,7 +666,7 @@ export default function ThreadingApp() {
                       onClick={() => handleReplyToUser(parent.id, isOJReply ? 'OJ' : parent.userNumber)}
                       style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '9999px', padding: '2px 4px', display: 'flex', alignItems: 'center', gap: '2px', border: 'none', cursor: 'pointer' }}
                     >
-                      <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white', transform: 'scaleX(-1)' }} />
+                      <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white' }} />
                       <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, textTransform: 'uppercase' }}>Reply</span>
                     </button>
                   </div>
@@ -760,7 +760,7 @@ export default function ThreadingApp() {
                       onClick={() => handleReplyToUser(reply.id, isOJReply ? 'OJ' : reply.userNumber)}
                       style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '9999px', padding: '2px 4px', display: 'flex', alignItems: 'center', gap: '2px', border: 'none', cursor: 'pointer' }}
                     >
-                      <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white', transform: 'scaleX(-1)' }} />
+                      <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white' }} />
                       <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, textTransform: 'uppercase' }}>Reply</span>
                     </button>
                   </div>
@@ -951,7 +951,7 @@ export default function ThreadingApp() {
                             onClick={() => handleReplyToUser(parent.id, isOJReply ? 'OJ' : parent.userNumber)}
                             style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '9999px', padding: '2px 4px', display: 'flex', alignItems: 'center', gap: '2px', border: 'none', cursor: 'pointer' }}
                           >
-                            <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white', transform: 'scaleX(-1)' }} />
+                            <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white' }} />
                             <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, textTransform: 'uppercase' }}>Reply</span>
                           </button>
                         </div>
@@ -1041,7 +1041,7 @@ export default function ThreadingApp() {
                             onClick={() => handleReplyToUser(reply.id, isOJReply ? 'OJ' : reply.userNumber)}
                             style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '9999px', padding: '2px 4px', display: 'flex', alignItems: 'center', gap: '2px', border: 'none', cursor: 'pointer' }}
                           >
-                            <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white', transform: 'scaleX(-1)' }} />
+                            <CornerUpLeft style={{ width: '24px', height: '24px', color: 'white' }} />
                             <span style={{ color: 'white', fontSize: '8px', fontFamily: '"GothamBold", Gotham, sans-serif', fontWeight: 600, textTransform: 'uppercase' }}>Reply</span>
                           </button>
                         </div>
