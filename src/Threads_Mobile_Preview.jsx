@@ -35,6 +35,9 @@ export default function ThreadingApp() {
   const [currentView, setCurrentView] = useState('feed');
   const [selectedPost, setSelectedPost] = useState(null);
 
+  // Transition state for page animations
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
   // Post data - will be set when a post is opened
   const [post, setPost] = useState(mockData.posts[0]);
 
@@ -168,12 +171,21 @@ export default function ThreadingApp() {
       replyOffsetFromTop = rect.top;
     }
 
-    setOpenThread({ parent, subReplies, lastVisibleReplyId, replyOffsetFromTop, scrollToReplyId });
+    // Animate transition
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setOpenThread({ parent, subReplies, lastVisibleReplyId, replyOffsetFromTop, scrollToReplyId });
+      setIsTransitioning(false);
+    }, 150);
   };
 
   // Handle closing thread view and restoring scroll position
   const handleCloseThread = () => {
-    setOpenThread(null);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setOpenThread(null);
+      setIsTransitioning(false);
+    }, 150);
     // scrollBackToReplyId is already set, useEffect will scroll to it
   };
 
@@ -373,20 +385,29 @@ export default function ThreadingApp() {
       ...reply,
       voteState: 'default'
     })));
-    setCurrentView('postDetail');
+    // Animate transition
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentView('postDetail');
+      setIsTransitioning(false);
+    }, 150);
   };
 
   // Handle going back to feed
   const handleBackToFeed = () => {
-    setCurrentView('feed');
-    setSelectedPost(null);
-    setOpenThread(null);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentView('feed');
+      setSelectedPost(null);
+      setOpenThread(null);
+      setIsTransitioning(false);
+    }, 150);
   };
 
   // Feed View
   if (currentView === 'feed') {
     return (
-      <div style={{ backgroundColor: 'white', height: '100vh', display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl', overflowY: 'auto' }}>
+      <div style={{ backgroundColor: 'white', height: '100vh', display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl', overflowY: 'auto', opacity: isTransitioning ? 0 : 1, transition: 'opacity 150ms ease-in-out' }}>
         {/* Feed Header */}
         <div style={{ backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '48px', padding: '0 16px', position: 'sticky', top: 0, zIndex: 100 }}>
           <div style={{ flex: 1 }}>
@@ -559,7 +580,7 @@ export default function ThreadingApp() {
     const truncatedText = parent.text.length > 50 ? parent.text.substring(0, 50) + '...' : parent.text;
 
     return (
-      <div style={{ backgroundColor: '#009d52', height: viewportHeight, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: viewportOffset, left: '50%', transform: 'translateX(-50%)', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl' }}>
+      <div style={{ backgroundColor: '#009d52', height: viewportHeight, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: viewportOffset, left: '50%', transform: 'translateX(-50%)', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl', opacity: isTransitioning ? 0 : 1, transition: 'opacity 150ms ease-in-out' }}>
         {/* Thread View Top Navigation Bar - Fixed */}
         <div style={{ backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', height: '48px', padding: '8px 16px', zIndex: 100, gap: '16px', overflow: 'hidden', flexShrink: 0 }}>
           <button
@@ -788,7 +809,7 @@ export default function ThreadingApp() {
   }
 
   return (
-    <div style={{ backgroundColor: '#009d52', height: viewportHeight, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: viewportOffset, left: '50%', transform: 'translateX(-50%)', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl' }}>
+    <div style={{ backgroundColor: '#009d52', height: viewportHeight, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '393px', margin: '0 auto', position: 'fixed', top: viewportOffset, left: '50%', transform: 'translateX(-50%)', fontFamily: '"GothamBook", Gotham, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 400, direction: 'rtl', opacity: isTransitioning ? 0 : 1, transition: 'opacity 150ms ease-in-out' }}>
       {/* Top Navigation Bar - Fixed */}
       <div style={{ backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '49px', padding: '0 16px', zIndex: 100, flexShrink: 0 }}>
         <button onClick={handleBackToFeed} style={{ width: '24px', height: '24px', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
