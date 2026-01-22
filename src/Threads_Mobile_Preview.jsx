@@ -90,9 +90,6 @@ export default function ThreadingApp() {
     voteState: 'default'
   })));
 
-  // Activities state - notifications for subreplies
-  const [activities, setActivities] = useState((mockData.activitiesByPostId && mockData.activitiesByPostId[1]) || []);
-
   // Current user's number - next chronological number after highest existing user
   const [myUserNumber] = useState(() => {
     const allReplies = Object.values(mockData.repliesByPostId).flat();
@@ -385,8 +382,6 @@ export default function ThreadingApp() {
       ...reply,
       voteState: 'default'
     })));
-    // Load activities for this post
-    setActivities((mockData.activitiesByPostId && mockData.activitiesByPostId[feedPost.id]) || []);
     setCurrentView('postDetail');
     // Clear reply state when navigating
     setReplyingTo(null);
@@ -875,7 +870,7 @@ export default function ThreadingApp() {
 
         {/* Dynamic Replies and Activities - Organized chronologically */}
         {(() => {
-          const feedItems = organizeRepliesWithActivities(replies, activities);
+          const feedItems = organizeRepliesWithActivities(replies);
           const MAX_VISIBLE_SUBREPLIES = 3;
 
           return feedItems.map((item) => {
