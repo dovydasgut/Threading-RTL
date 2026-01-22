@@ -870,7 +870,9 @@ export default function ThreadingApp() {
 
         {/* Dynamic Replies and Activities - Organized chronologically */}
         {(() => {
-          const feedItems = organizeRepliesWithActivities(replies);
+          // Only show activities for post 3
+          const showActivities = post.id === 3;
+          const feedItems = organizeRepliesWithActivities(replies, showActivities);
           const MAX_VISIBLE_SUBREPLIES = 3;
 
           return feedItems.map((item) => {
