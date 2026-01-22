@@ -91,7 +91,7 @@ export default function ThreadingApp() {
   })));
 
   // Activities state - notifications for subreplies
-  const [activities, setActivities] = useState(mockData.activitiesByPostId?.[1] || []);
+  const [activities, setActivities] = useState((mockData.activitiesByPostId && mockData.activitiesByPostId[1]) || []);
 
   // Current user's number - next chronological number after highest existing user
   const [myUserNumber] = useState(() => {
@@ -386,7 +386,7 @@ export default function ThreadingApp() {
       voteState: 'default'
     })));
     // Load activities for this post
-    setActivities(mockData.activitiesByPostId?.[feedPost.id] || []);
+    setActivities((mockData.activitiesByPostId && mockData.activitiesByPostId[feedPost.id]) || []);
     setCurrentView('postDetail');
     // Clear reply state when navigating
     setReplyingTo(null);
